@@ -6,14 +6,9 @@ import {
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
-    // Parse the HTTP request body
     const requestBody = JSON.parse(event.body as string);
     const { prompt } = requestBody;
-
-    const client = new BedrockRuntimeClient({
-        region: 'us-east-1',
-    });
-
+    const client = new BedrockRuntimeClient({region: 'us-east-1',});
     const response: any = await client.send(
       new InvokeModelCommand({
         modelId: 'ai21.j2-mid-v1',
@@ -31,19 +26,14 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         }),
       })
     );
-
     const jsonString = Buffer.from(response.body).toString('utf8');
     const parsedDataText = JSON.parse(jsonString);
-
-    // Return a successful HTTP response
     return {
       statusCode: 200,
       body: JSON.stringify({ response: parsedDataText.completions[0].data.text }),
     };
   } catch (err) {
     console.error(err);
-
-    // Return an error HTTP response
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Something went wrong while invoking the model' }),

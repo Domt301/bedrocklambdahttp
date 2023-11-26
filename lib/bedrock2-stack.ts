@@ -37,16 +37,14 @@ export class Bedrock2Stack extends Stack {
       })
     );
 
-    // create an http api 
-    const bedrockLambdaIntegration = new HttpLambdaIntegration('bedrockLmabdaIntegration', bedrockLambda);
 
+    const bedrockLambdaIntegration = new HttpLambdaIntegration('bedrockLmabdaIntegration', bedrockLambda);
     const httpApi = new apigwv2.HttpApi(this, 'HttpApi',);
     httpApi.addRoutes({
       path: '/bedrock',
       methods: [apigwv2.HttpMethod.POST],
       integration: bedrockLambdaIntegration
     });
-
     new CfnOutput(this, 'HttpApiUrl', {
       value: httpApi.url!,
     });
