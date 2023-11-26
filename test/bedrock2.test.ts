@@ -2,7 +2,7 @@ import * as cdk from 'aws-cdk-lib';
 import { Template, Match } from 'aws-cdk-lib/assertions';
 import * as Bedrock2 from '../lib/bedrock2-stack';
 
-test('SQS Queue and SNS Topic Created', () => {
+test('Lambda and http api Created', () => {
   const app = new cdk.App();
   // WHEN
   const stack = new Bedrock2.Bedrock2Stack(app, 'MyTestStack');
@@ -10,8 +10,11 @@ test('SQS Queue and SNS Topic Created', () => {
 
   const template = Template.fromStack(stack);
 
-  template.hasResourceProperties('AWS::SQS::Queue', {
-    VisibilityTimeout: 300
-  });
-  template.resourceCountIs('AWS::SNS::Topic', 1);
+  // expect a lambda function
+  expect(template.resourceCountIs('AWS::Lambda::Function', 1));
+
+  // expect a http api
+  expect(template.resourceCountIs('AWS::ApiGatewayV2::Api', 1));
 });
+
+
